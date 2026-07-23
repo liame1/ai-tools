@@ -1,0 +1,37 @@
+node,step,question,order,option_label,next,tool_ids,blurb
+start,Step One,What would you like to do with AI?,1,Write or edit text,write,,
+start,Step One,What would you like to do with AI?,2,Code or build an app,build,,
+start,Step One,What would you like to do with AI?,3,Create images or video,visual,,
+start,Step One,What would you like to do with AI?,4,"Voice, music, or audio",audio,,
+start,Step One,What would you like to do with AI?,5,Research or study,research,,
+start,Step One,What would you like to do with AI?,6,Organize & be productive,organize,,
+start,Step One,What would you like to do with AI?,7,Just chat or explore,chat,,
+write,Step Two,What kind of writing?,1,Polish & fix my writing,,grammarly;quillbot;wordtune,"These tools fix grammar, refine tone, and rephrase sentences as you write — Grammarly for everywhere-you-type corrections, QuillBot for paraphrasing, Wordtune for tone rewrites."
+write,Step Two,What kind of writing?,2,Marketing & business copy,,jasper;copyai;chatgpt,"Jasper and Copy.ai are built for marketing content at volume, with ChatGPT as a flexible all-rounder for drafts and ideas."
+write,Step Two,What kind of writing?,3,Academic writing,,litero;quillbot;elicit,"Litero drafts with real citations, QuillBot helps rephrase and tighten, and Elicit backs your arguments with peer-reviewed research."
+write,Step Two,What kind of writing?,4,General drafting & ideas,,chatgpt;claude;gemini,"The big general assistants are your best bet for drafting anything — Claude shines on longer, more nuanced writing."
+build,Step Two,How do you want to build?,1,I code — make me faster,,cursor;ghcopilot;windsurf;tabnine,"AI-powered editors and autocomplete: Cursor for whole-project edits from plain English, GitHub Copilot for inline suggestions, Windsurf and Tabnine as strong alternatives."
+build,Step Two,How do you want to build?,2,No code — build it for me,,lovable;bolt;replit;v0,"Describe your app in plain English and these build it: Lovable and Bolt.new for full apps, v0 for polished UI components, Replit for hosted projects."
+build,Step Two,How do you want to build?,3,Data apps & dashboards,,streamlit;claude;deepseek,Streamlit turns Python scripts into shareable dashboards; Claude and DeepSeek are excellent coding copilots for the data work itself.
+build,Step Two,How do you want to build?,4,Explore open-source AI,,hf;deepseek;mistral,Hugging Face hosts thousands of free models; DeepSeek and Mistral publish some of the best open-source models you can run or build on.
+visual,Step Two,What do you want to create?,1,Images & art,,midjourney;dalle;leonardo;ideogram;firefly,"Midjourney for artistry, DALL-E for ease, Leonardo for custom styles, Ideogram when you need readable text in the image, Firefly for commercially-safe work."
+visual,Step Two,What do you want to create?,2,Video from prompts,,sora;runway;kling;pika;luma,"Sora and Runway lead in quality, Kling excels at realistic motion, Pika and Luma are fast and accessible for creators."
+visual,Step Two,What do you want to create?,3,Presenter & avatar videos,,heygen;synthesia,"Both generate professional videos with lifelike AI presenters — HeyGen for creators and marketing, Synthesia for enterprise training at scale."
+visual,Step Two,What do you want to create?,4,Edit & clean up photos,,photoroom;clipdrop;canva,"Photoroom for instant background removal and product shots, Clipdrop for object erasing and upscaling, Canva for all-in-one design with AI built in."
+audio,Step Two,What kind of audio?,1,Voiceovers & narration,,elevenlabs;murf,ElevenLabs is the industry standard for realistic voices and cloning; Murf adds a full voiceover studio with timing controls.
+audio,Step Two,What kind of audio?,2,Music & songs,,suno;udio,"Both generate complete original songs from a text prompt — Suno is the most popular, Udio offers finer control over the result."
+audio,Step Two,What kind of audio?,3,Read text aloud to me,,speechify,"Speechify turns any web page, PDF, or document into natural-sounding audio at whatever speed you like."
+audio,Step Two,What kind of audio?,4,Edit podcasts & audio,,descript;elevenlabs,Descript lets you edit audio by editing the transcript — delete a sentence of text and it’s gone from the recording. ElevenLabs handles voice fixes and dubbing.
+research,Step Two,What are you researching?,1,Answers with sources,,perplexity;gemini,"Perplexity answers questions with cited, real-time sources — like a search engine that explains. Gemini adds Google’s live web index."
+research,Step Two,What are you researching?,2,Academic papers,,elicit;consensus;scispace,Elicit and Consensus search millions of peer-reviewed papers and summarize the evidence; SciSpace helps you actually read and understand them.
+research,Step Two,What are you researching?,3,My own documents & PDFs,,notebooklm;chatpdf;claude,"NotebookLM builds a chatty knowledge base from your files (and makes audio overviews), ChatPDF is the quick single-PDF option, Claude handles long documents natively."
+research,Step Two,What are you researching?,4,Homework & tutoring,,khanmigo;thetawise;unstuck;turbo,"Khanmigo tutors Socratically, ThetaWise walks through math step by step, Unstuck helps you get organized, Turbo AI covers quick questions."
+organize,Step Two,What do you want to streamline?,1,Meeting notes & transcripts,,otter;fireflies,"Both join your calls, transcribe everything, and hand you summaries and action items afterward — Otter for simplicity, Fireflies for searchable meeting history."
+organize,Step Two,What do you want to streamline?,2,Presentations & docs,,gamma;beautiful;tome,"Gamma generates polished decks from an outline in seconds, Beautiful.ai auto-formats as you edit, Tome leans into narrative storytelling."
+organize,Step Two,What do you want to streamline?,3,Automate repetitive work,,zapier;make,"Describe a workflow and these connect your apps to run it automatically — Zapier for ease, Make for complex multi-step logic."
+organize,Step Two,What do you want to streamline?,4,My calendar & schedule,,motion;reclaim,"Both auto-build your day around tasks and meetings — Motion plans the entire day for you, Reclaim protects focus time and habits."
+organize,Step Two,What do you want to streamline?,5,Notes & knowledge,,notion;notebooklm;mem0,"Notion AI works inside your existing workspace, NotebookLM turns documents into a chatty knowledge base, Mem0 gives your AI tools long-term memory."
+chat,Step Two,What kind of conversation?,1,A capable all-rounder,,chatgpt;claude;gemini;copilot,"The four big general assistants — all excellent, each with a home-field advantage: ChatGPT for breadth, Claude for depth, Gemini for Google users, Copilot for Microsoft users."
+chat,Step Two,What kind of conversation?,2,Free & no account fuss,,metaai;deepseek;mistral,"Meta AI lives inside apps you already use, and DeepSeek and Mistral offer powerful chat completely free."
+chat,Step Two,What kind of conversation?,3,Personality & fun,,grok;characterai;pi,"Grok brings wit and real-time trends, Character.ai lets you talk to any persona imaginable, Pi is the warm, thoughtful listener."
+chat,Step Two,What kind of conversation?,4,Browsing help,,ace;perplexity,Ace AI summarizes and explains pages right in your browser; Perplexity answers anything with cited sources.

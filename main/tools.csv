@@ -1,0 +1,71 @@
+id,name,domain,logo,desc
+chatgpt,ChatGPT,chatgpt.com,,"The world’s most widely used AI assistant for writing, coding, research, and everyday questions."
+claude,Claude,claude.ai,,"Anthropic’s assistant, strong at reasoning, long documents, and coding projects."
+gemini,Gemini,gemini.google.com,,"Google’s AI assistant, integrated with Gmail, Docs, and Search."
+copilot,Microsoft Copilot,copilot.microsoft.com,,Microsoft’s assistant built into Windows and Office 365.
+deepseek,DeepSeek,deepseek.com,,"Free, open-source chatbot that excels at coding and logical reasoning."
+grok,Grok,grok.com,,xAI’s witty chatbot with real-time awareness of X (Twitter).
+metaai,Meta AI,meta.ai,,"Free assistant built into Facebook, Instagram, WhatsApp, and Messenger."
+mistral,Mistral (Le Chat),mistral.ai,,"Fast, privacy-conscious European alternative to ChatGPT."
+pi,Pi,pi.ai,,"A supportive, conversational AI for thinking things through."
+ghcopilot,GitHub Copilot,github.com,,AI code completion inside VS Code and other editors.
+cursor,Cursor,cursor.com,,AI-first code editor that edits whole projects from plain English.
+windsurf,Windsurf,windsurf.com,,AI code editor with a generous free tier (formerly Codeium).
+tabnine,Tabnine,tabnine.com,,Privacy-focused AI code completion that can run locally.
+lovable,Lovable,lovable.dev,,Builds full web apps from plain-English descriptions — no code needed.
+bolt,Bolt.new,bolt.new,,Describe an app and it builds and previews it instantly in the browser.
+v0,v0 by Vercel,v0.dev,,"Generates polished, production-ready UI components from a prompt."
+replit,Replit,replit.com,,Browser-based coding with AI help — build and host apps with zero setup.
+streamlit,Streamlit,streamlit.io,,Turns Python data scripts into interactive web apps and dashboards.
+hf,Hugging Face,huggingface.co,,The hub of open-source AI — thousands of free models and datasets.
+midjourney,Midjourney,midjourney.com,,Top-tier AI image generator known for strikingly artistic results.
+dalle,DALL-E 3,openai.com,,"OpenAI’s easy image generator, built into ChatGPT."
+sora,Sora,sora.com,,OpenAI’s text-to-video model — realistic short clips from prompts.
+runway,Runway ML,runwayml.com,,Professional AI video creation and editing suite used in film.
+kling,Kling AI,klingai.com,,Text-to-video with impressively realistic motion.
+pika,Pika Labs,pika.art,,"Quick, easy AI video clips from text or images."
+luma,Luma Dream Machine,lumalabs.ai,,Cinematic AI video generation with smooth camera movement.
+firefly,Adobe Firefly,adobe.com,,"Adobe’s commercially-safe AI image tools, built into Photoshop."
+leonardo,Leonardo AI,leonardo.ai,,"Customizable image generation, loved by game and concept artists."
+ideogram,Ideogram,ideogram.ai,,Image generator that renders readable text — great for logos and posters.
+canva,Canva AI,canva.com,,"AI design features inside Canva — image gen, magic edits, and more."
+drawthings,Draw Things,drawthings.ai,,"Free, private image generation that runs entirely on your Mac/iPhone."
+heygen,HeyGen,heygen.com,,AI avatar videos with lifelike presenters — no camera needed.
+synthesia,Synthesia,synthesia.io,,Enterprise AI avatar videos for training and explainers.
+photoroom,Photoroom,photoroom.com,,Instant background removal and pro product photos.
+clipdrop,Clipdrop,clipdrop.co,,"AI photo cleanup: erase objects, upscale, relight, remove backgrounds."
+elevenlabs,ElevenLabs,elevenlabs.io,,Industry-leading realistic AI voices and voice cloning.
+murf,Murf AI,murf.ai,,Professional AI voiceover studio with 120+ voices.
+speechify,Speechify,speechify.com,,Reads any text aloud in natural voices at any speed.
+suno,Suno,suno.com,,Generates complete original songs — vocals and all — from a prompt.
+udio,Udio,udio.com,,High-quality AI music generation with fine-grained control.
+descript,Descript,descript.com,,Edit podcasts and videos by editing the transcript text.
+grammarly,Grammarly,grammarly.com,,"Real-time grammar, tone, and clarity fixes everywhere you write."
+quillbot,QuillBot,quillbot.com,,"Paraphrases, summarizes, and refines your writing."
+wordtune,Wordtune,wordtune.com,,"Rewrites sentences in different tones — formal, casual, shorter."
+jasper,Jasper AI,jasper.ai,,Marketing content at scale with brand voice controls.
+copyai,Copy.ai,copy.ai,,"Fast marketing copy, emails, and social posts."
+litero,Litero AI,litero.ai,,"Academic writing assistant with real, source-backed citations."
+perplexity,Perplexity,perplexity.ai,,"AI search engine that answers with cited, real-time sources."
+notebooklm,Notebook LM,notebooklm.google.com,,"Chat with your documents — summaries, Q&A, even audio overviews."
+elicit,Elicit,elicit.com,,Searches and summarizes millions of peer-reviewed papers.
+consensus,Consensus,consensus.app,,Evidence-based answers drawn from scientific literature.
+scispace,SciSpace,typeset.io,,Upload research papers and ask questions in plain language.
+chatpdf,ChatPDF,chatpdf.com,,"Chat with any PDF — summaries, answers, and key data points."
+khanmigo,Khanmigo,khanacademy.org,,Khan Academy’s AI tutor that teaches instead of giving answers.
+turbo,Turbo AI,,,"Fast, lightweight AI assistant for quick answers."
+notion,Notion AI,notion.com,,"AI inside Notion: summarize notes, draft docs, find answers in your workspace."
+otter,Otter.ai,otter.ai,,Transcribes and summarizes meetings and lectures in real time.
+fireflies,Fireflies.ai,fireflies.ai,,"Joins your calls, records, transcribes, and extracts action items."
+unstuck,Unstuck AI,,,Helps overwhelmed students break big assignments into small steps.
+gamma,Gamma,gamma.app,,Generates polished presentations and docs from an outline in seconds.
+beautiful,Beautiful.ai,beautiful.ai,,Slides that auto-format themselves as you add content.
+tome,Tome,tome.app,,AI storytelling decks for pitches and strategy docs.
+zapier,Zapier AI,zapier.com,,Automate workflows across thousands of apps in plain English.
+make,Make,make.com,,Visual drag-and-drop automation for complex workflows.
+reclaim,Reclaim AI,reclaim.ai,,"Auto-schedules tasks, habits, and focus time on your calendar."
+motion,Motion,usemotion.com,,Builds your daily schedule automatically from tasks and deadlines.
+thetawise,ThetaWise,,,Step-by-step math solutions that teach the process.
+ace,Ace AI,app.ace.ai,,Browser assistant that summarizes and explains any web page.
+characterai,Character.ai,character.ai,,Chat with AI personas — fictional characters and original creations.
+mem0,Mem0,mem0.ai,,Gives AI tools persistent memory of your past conversations.
