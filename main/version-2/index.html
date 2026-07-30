@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "SJSU AI Tools Directory",
+  "schemaVersion": 1,
+  "description": "Browsable directory of AI tools curated by the SJSU Library, grouped by category and subcategory, loaded from tools.csv.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJSU AI Tools Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #0055A2;
+    --blue-deep: #003B72;
+    --blue-tint: #EAF1F8;
+    --gold: #E5A823;
+    --gold-deep: #B9840F;
+    --paper: #FAF8F3;
+    --card: #FFFFFF;
+    --ink: #1B222C;
+    --ink-soft: #52586A;
+    --ink-faint: #8B8F9C;
+    --line: #E3DFD3;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  a { color: inherit; }
+
+  /* ── Header ── */
+  .masthead {
+    background: linear-gradient(155deg, var(--blue) 0%, var(--blue-deep) 100%);
+    color: #fff;
+    padding: 46px 28px 40px;
+  }
+  .masthead-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  h1.title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 4.4vw, 3.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    max-width: 720px;
+  }
+  .subtitle {
+    margin-top: 14px;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.82);
+    max-width: 580px;
+  }
+
+  .search-row {
+    margin-top: 30px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1 1 320px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 0.96rem;
+    padding: 13px 16px 13px 42px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: rgba(255,255,255,0.96);
+    color: var(--ink);
+    outline: none;
+    transition: box-shadow 0.2s ease;
+  }
+  .search-box input::placeholder { color: var(--ink-faint); }
+  .search-box input:focus { box-shadow: 0 0 0 3px rgba(229,168,35,0.55); }
+  .search-box svg {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 17px; height: 17px; opacity: 0.5;
+  }
+  .result-count {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+    white-space: nowrap;
+  }
+
+  /* ── Category nav ── */
+  .catnav-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(250,248,243,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .catnav {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 0 28px;
+    overflow-x: auto;
+  }
+  .catnav button {
+    font-family: var(--sans);
+    font-size: 0.86rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    padding: 15px 14px 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .catnav button:hover { color: var(--blue); }
+  .catnav button.active { color: var(--blue); border-color: var(--gold); }
+  .catnav .count { color: var(--ink-faint); font-weight: 500; }
+  .catnav button.active .count { color: var(--gold-deep); }
+
+  /* ── Content ── */
+  .content {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .category-section { padding-top: 52px; scroll-margin-top: 58px; }
+  .category-head {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-left: 18px;
+    border-left: 4px solid var(--blue);
+    margin-bottom: 30px;
+  }
+  .category-head h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    color: var(--ink);
+  }
+  .category-head .cat-meta {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 620px;
+  }
+  .category-head .cat-count {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    background: #FBF1DC;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  .subcategory { margin-bottom: 40px; }
+  .subcategory h3 {
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subcategory h3::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--gold);
+    border-radius: 1px;
+    transform: rotate(45deg);
+    flex: none;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── Tool card ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+  }
+  .card:hover {
+    box-shadow: 0 10px 28px rgba(0,60,110,0.1);
+    transform: translateY(-2px);
+    border-color: #cfd8e4;
+  }
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 12px;
+  }
+  .card-top .logo {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    object-fit: cover;
+    flex: none;
+    background: var(--blue-tint);
+  }
+  .card-top .mono {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    flex: none;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #fff;
+    background: var(--blue);
+  }
+  .card-name-wrap { min-width: 0; }
+  .card-name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.08rem;
+    line-height: 1.25;
+    color: var(--ink);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  a.card-name:hover { color: var(--blue); }
+  .card-name .arrow { font-size: 0.72em; opacity: 0.45; }
+  .card-tagline {
+    font-style: italic;
+    font-size: 0.86rem;
+    color: var(--ink-faint);
+    margin-top: 1px;
+  }
+  .card-desc {
+    font-size: 0.9rem;
+    line-height: 1.58;
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-tint);
+    border-radius: 999px;
+    padding: 4px 9px;
+    margin-top: 12px;
+    width: fit-content;
+  }
+  .card-note {
+    font-size: 0.79rem;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .card.hidden { display: none; }
+  .subcategory.hidden, .category-section.hidden { display: none; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-faint);
+    font-size: 0.96rem;
+    display: none;
+  }
+  .empty-state.show { display: block; }
+  .empty-state .big { font-family: var(--serif); font-size: 1.3rem; color: var(--ink); margin-bottom: 8px; }
+
+  /* ── Footer ── */
+  .footer {
+    max-width: 1080px;
+    margin: 60px auto 0;
+    padding: 24px 28px 0;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer b { color: var(--ink-soft); }
+
+  /* ── Loading / error ── */
+  .status-screen {
+    max-width: 640px;
+    margin: 14vh auto 0;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .status-screen .big {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  .status-screen p { color: var(--ink-soft); line-height: 1.65; font-size: 0.95rem; }
+  .status-screen code {
+    background: var(--blue-tint);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  @media (max-width: 640px) {
+    .masthead { padding: 34px 20px 30px; }
+    .content { padding: 0 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="status-screen">
+  <div class="big">Loading directory…</div>
+  <p>Fetching tools.csv</p>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   EDITING THIS DIRECTORY
+   ────────────────────────────────────────────────────────────────
+   All tool listings live in tools.csv, next to this file. Columns:
+
+     id           unique slug, e.g. "perplexity-ai"
+     category     top-level grouping (e.g. "Research & Discovery")
+     subcategory  second-level grouping under a category
+     name         tool's display name
+     tagline      short one-line description (Type/Tagline)
+     description  full paragraph description
+     notes        availability / transparency notes (optional).
+                  Any note containing "SJSU" gets a highlighted
+                  "SJSU-provided access" badge on the card.
+     domain       website domain for the link + favicon, e.g.
+                  "perplexity.ai" (no https://, no trailing slash)
+     logo         optional direct image URL to override the
+                  auto-favicon. Leave blank to auto-detect.
+
+   Add a row = add a tool. Change "category"/"subcategory" text to
+   regroup tools — new group names just appear automatically, no
+   code changes needed. Category display order follows the order
+   categories first appear in the file, top to bottom.
+
+   IMPORTANT: this page loads tools.csv with fetch(), so it must be
+   served over http(s) — GitHub Pages, or a local server (VS Code's
+   "Live Server" extension, `npx serve`, etc). Opening this file
+   directly by double-clicking it (a file:// address) will not work;
+   browsers block local pages from fetching sibling files.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── CSV parser (handles quoted fields, commas, "" escapes) ── */
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], next = text[i + 1];
+    if (inQuotes) {
+      if (c === '"' && next === '"') { field += '"'; i++; }
+      else if (c === '"') { inQuotes = false; }
+      else { field += c; }
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\r') { /* skip */ }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else field += c;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  if (rows.length && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') rows.pop();
+  const header = rows.shift().map(h => h.trim());
+  return rows.map(r => {
+    const obj = {};
+    header.forEach((h, i) => obj[h] = (r[i] ?? '').trim());
+    return obj;
+  });
+}
+
+function parseToolsCSV(text) {
+  return parseCSV(text).map(r => ({
+    id: r.id, category: r.category, subcategory: r.subcategory, name: r.name,
+    tagline: r.tagline, description: r.description, notes: r.notes,
+    domain: r.domain, logo: r.logo
+  }));
+}
+
+/* ── Group tools into Category -> Subcategory -> [tools], preserving first-seen order ── */
+function groupTools(tools) {
+  const cats = [];
+  const catMap = {};
+  tools.forEach(t => {
+    if (!catMap[t.category]) {
+      const entry = { name: t.category, subs: [], subMap: {} };
+      catMap[t.category] = entry;
+      cats.push(entry);
+    }
+    const cat = catMap[t.category];
+    if (!cat.subMap[t.subcategory]) {
+      const sub = { name: t.subcategory, tools: [] };
+      cat.subMap[t.subcategory] = sub;
+      cat.subs.push(sub);
+    }
+    cat.subMap[t.subcategory].tools.push(t);
+  });
+  return cats;
+}
+
+const MONO_COLORS = ['#0055A2','#B9840F','#2E7D63','#7A3E9D','#B04A3C','#1E6E8C'];
+function monoColor(i) { return MONO_COLORS[i % MONO_COLORS.length]; }
+
+function slugId(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function esc(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function cardHTML(t, i) {
+  let logoHTML;
+  if (t.logo) {
+    logoHTML = `<img class="logo" src="${esc(t.logo)}" alt="" loading="lazy"
+      onerror="this.outerHTML='<div class=&quot;mono&quot; style=&quot;background:${monoColor(i)}&quot;>${esc(t.name[0])}</div>'">`;
+  } else if (t.domain) {
+    logoHTML = `<img class="logo" src="https://www.google.com/s2/favicons?domain=${esc(t.domain)}&sz=64" alt="" loading="lazy"
+      onerror="this.outerHTML='<div class=&quot;mono&quot; style=&quot;background:${monoColor(i)}&quot;>${esc(t.name[0])}</div>'">`;
+  } else {
+    logoHTML = `<div class="mono" style="background:${monoColor(i)}">${esc(t.name[0])}</div>`;
+  }
+
+  const nameInner = `${esc(t.name)}${t.domain ? '<span class="arrow">↗</span>' : ''}`;
+  const nameHTML = t.domain
+    ? `<a class="card-name" href="https://${esc(t.domain)}" target="_blank" rel="noopener">${nameInner}</a>`
+    : `<span class="card-name">${nameInner}</span>`;
+
+  const badge = /sjsu/i.test(t.notes || '')
+    ? `<div class="card-badge">✓ SJSU-provided access</div>` : '';
+  const noteHTML = t.notes
+    ? `<div class="card-note">${esc(t.notes)}</div>` : '';
+
+  const searchBlob = esc([t.name, t.tagline, t.description, t.category, t.subcategory].join(' ')).toLowerCase();
+
+  return `
+    <div class="card" data-search="${searchBlob}">
+      <div class="card-top">
+        ${logoHTML}
+        <div class="card-name-wrap">
+          ${nameHTML}
+          <div class="card-tagline">${esc(t.tagline)}</div>
+        </div>
+      </div>
+      <div class="card-desc">${esc(t.description)}</div>
+      ${badge}
+      ${noteHTML}
+    </div>`;
+}
+
+/* One-sentence framing per category, written to orient the reader
+   (edit here if you want different intro copy — this isn't in the CSV
+   since it describes the group, not an individual tool). */
+const CATEGORY_INTROS = {
+  'Research & Discovery': 'Search engines, citation mappers, and reference tools that help you find and make sense of scholarly literature.',
+  'Video Production & Editing': 'Tools for generating, narrating, and editing video — from cinematic clips to transcript-based editing.',
+  'Visual Design & Presentation': 'Image generators and presentation builders that turn a prompt or outline into finished visuals.',
+  'Music & Sound Creation': 'AI composers and song generators that produce original music and royalty-free soundtracks from a text prompt.',
+};
+
+function buildPage() {
+  document.body.innerHTML = `
+    <header class="masthead">
+      <div class="masthead-inner">
+        <div class="eyebrow"><span class="dot"></span>San José State University · Library</div>
+        <h1 class="title">AI Tools Directory</h1>
+        <p class="subtitle">A browsable guide to generative AI tools for research, video, design, and music — curated by the SJSU Library for students, faculty, and staff.</p>
+        <div class="search-row">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input id="searchInput" type="text" placeholder="Search by tool name, task, or keyword…" autocomplete="off">
+          </div>
+          <div class="result-count" id="resultCount"></div>
+        </div>
+      </div>
+    </header>
+    <nav class="catnav-wrap"><div class="catnav" id="catNav"></div></nav>
+    <main class="content" id="content"></main>
+    <div class="empty-state" id="emptyState">
+      <div class="big">No tools match "<span id="emptyQuery"></span>"</div>
+      <div>Try a different search term, or clear the search box.</div>
+    </div>
+    <footer class="footer">
+      <div><b>SJSU AI Tools Directory</b> — data lives entirely in <code>tools.csv</code>, editable without touching this page.</div>
+      <div id="footerCount"></div>
+    </footer>`;
+}
+
+function render(tools) {
+  const groups = groupTools(tools);
+  const content = document.getElementById('content');
+  const catNav = document.getElementById('catNav');
+
+  catNav.innerHTML = groups.map((cat, i) => {
+    const id = slugId(cat.name);
+    const count = cat.subs.reduce((n, s) => n + s.tools.length, 0);
+    return `<button data-target="cat-${id}" class="${i === 0 ? 'active' : ''}">${esc(cat.name)} <span class="count">${count}</span></button>`;
+  }).join('');
+
+  content.innerHTML = groups.map(cat => {
+    const id = slugId(cat.name);
+    const count = cat.subs.reduce((n, s) => n + s.tools.length, 0);
+    const intro = CATEGORY_INTROS[cat.name] || '';
+    return `
+      <section class="category-section" id="cat-${id}">
+        <div class="category-head">
+          <div>
+            <h2>${esc(cat.name)}</h2>
+            ${intro ? `<div class="cat-meta">${esc(intro)}</div>` : ''}
+          </div>
+          <div class="cat-count">${count} tool${count === 1 ? '' : 's'}</div>
+        </div>
+        ${cat.subs.map(sub => `
+          <div class="subcategory" data-sub="${slugId(sub.name)}">
+            <h3>${esc(sub.name)}</h3>
+            <div class="card-grid">
+              ${sub.tools.map((t, i) => cardHTML(t, i)).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </section>`;
+  }).join('');
+
+  document.getElementById('footerCount').textContent = tools.length + ' tools across ' + groups.length + ' categories';
+
+  wireNav();
+  wireSearch();
+}
+
+/* ── Category nav: click to scroll, IntersectionObserver to highlight active ── */
+function wireNav() {
+  const buttons = [...document.querySelectorAll('#catNav button')];
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById(btn.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  const sections = [...document.querySelectorAll('.category-section')];
+  if (!sections.length) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        buttons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+  sections.forEach(s => obs.observe(s));
+}
+
+/* ── Live search across name / tagline / description / category / subcategory ── */
+function wireSearch() {
+  const input = document.getElementById('searchInput');
+  const resultCount = document.getElementById('resultCount');
+  const emptyState = document.getElementById('emptyState');
+  const emptyQuery = document.getElementById('emptyQuery');
+  const allCards = [...document.querySelectorAll('.card')];
+  const allSubs = [...document.querySelectorAll('.subcategory')];
+  const allCats = [...document.querySelectorAll('.category-section')];
+  const total = allCards.length;
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (!q) {
+      allCards.forEach(c => c.classList.remove('hidden'));
+      allSubs.forEach(s => s.classList.remove('hidden'));
+      allCats.forEach(c => c.classList.remove('hidden'));
+      emptyState.classList.remove('show');
+      resultCount.textContent = '';
+      return;
+    }
+    let visible = 0;
+    allCards.forEach(c => {
+      const match = c.dataset.search.includes(q);
+      c.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    allSubs.forEach(sub => {
+      const anyVisible = [...sub.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      sub.classList.toggle('hidden', !anyVisible);
+    });
+    allCats.forEach(cat => {
+      const anyVisible = [...cat.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      cat.classList.toggle('hidden', !anyVisible);
+    });
+    resultCount.textContent = visible + ' of ' + total + ' tools';
+    emptyQuery.textContent = input.value.trim();
+    emptyState.classList.toggle('show', visible === 0);
+  });
+}
+
+/* ── Init: load tools.csv, then build + render the page ── */
+async function init() {
+  try {
+    const res = await fetch('tools.csv');
+    if (!res.ok) throw new Error('tools.csv failed to load (HTTP ' + res.status + ')');
+    const text = await res.text();
+    const tools = parseToolsCSV(text);
+    if (!tools.length) throw new Error('tools.csv loaded but contained no rows');
+
+    buildPage();
+    render(tools);
+  } catch (err) {
+    console.error('SJSU AI Tools Directory failed to load data:', err);
+    document.body.innerHTML = `
+      <div class="status-screen">
+        <div class="big">Couldn't load the directory</div>
+        <p>${esc(err.message)}</p>
+        <p style="margin-top:14px;">
+          Make sure <code>tools.csv</code> is in the same folder as this page, and that you're
+          viewing it over <strong>http(s)</strong> — via GitHub Pages, or a local server such as
+          VS Code's "Live Server" extension or <code>npx serve</code>. Opening this file directly
+          by double-clicking it (a <code>file://</code> address) blocks the browser from fetching
+          the CSV, even if it's right next to it.
+        </p>
+      </div>`;
+  }
+}
+init();
+</script>
+</body>
+</html>
