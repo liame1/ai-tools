@@ -9,654 +9,792 @@
 }
 </script>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Center - Tool Finder</title>
-<link rel="icon" type="image/x-icon" href="images/AI-Center-Icon(64x64).png">
-<style>
-  :root {
-    --bg: #fbfbfa;
-    --ink: #1a1a1e;
-    --ink-soft: #55555e;
-    --ink-faint: #9d9da8;
-    --line: #e7e7ea;
-    --accent: #4f46e5;
-    --accent-soft: #eef2ff;
-    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
-    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: var(--sans);
-    background:
-      radial-gradient(1100px 500px at 50% -10%, #f1f1ff 0%, rgba(241,241,255,0) 60%),
-      var(--bg);
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Center - Tool Finder</title>
+  <link rel="icon" type="image/x-icon" href="images/AI-Center-Icon-3-Ring.png">
+  <style>
+    :root {
+      --bg: #fbfbfa;
+      --ink: #1a1a1e;
+      --ink-soft: #55555e;
+      --ink-faint: #9d9da8;
+      --line: #e7e7ea;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    }
 
-  /* ── Top bar ── */
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 22px 34px;
-    animation: fadeIn 0.8s ease both;
-  }
-  .brand {
-    font-family: var(--serif);
-    font-size: 1.02rem;
-    letter-spacing: 0.01em;
-    color: var(--ink-soft);
-  }
-  .brand b { color: var(--ink); font-weight: 600; }
-  .topbar .restart {
-    background: none;
-    border: none;
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    cursor: pointer;
-    transition: color 0.2s ease;
-    padding: 6px 2px;
-  }
-  .topbar .restart:hover { color: var(--accent); }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── Experience stage ── */
-  .stage-wrap {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 7vh 28px 40px;
-    text-align: center;
-    min-height: 46vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .stage { transition: opacity 0.35s ease, transform 0.35s ease; }
-  .stage.leaving { opacity: 0; transform: translateY(-10px); }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  .step-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 26px;
-    animation: fadeIn 0.5s ease both;
-  }
-  .question {
-    font-family: var(--serif);
-    font-size: clamp(1.7rem, 4.2vw, 2.9rem);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.25;
-    color: var(--ink);
-    min-height: 1.3em;
-  }
-  .caret {
-    display: inline-block;
-    width: 2px;
-    height: 0.95em;
-    background: var(--accent);
-    margin-left: 3px;
-    vertical-align: -0.12em;
-    animation: blink 1.05s step-end infinite;
-  }
-  .caret.done { animation: blink 1.05s step-end infinite, caretFade 0.6s ease 0.9s both; }
+    body {
+      font-family: var(--sans);
+      background:
+        radial-gradient(1100px 500px at 50% -10%, #f1f1ff 0%, rgba(241, 241, 255, 0) 60%),
+        var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
 
-  /* ── Options: pure text ── */
-  .options {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px 34px;
-    margin-top: 40px;
-  }
-  .opt {
-    background: none;
-    border: none;
-    font-family: var(--sans);
-    font-size: 0.98rem;
-    font-weight: 450;
-    color: var(--ink-soft);
-    cursor: pointer;
-    padding: 6px 2px;
-    position: relative;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: riseIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
-    transition: color 0.2s ease;
-  }
-  .opt .num {
-    font-size: 0.62rem;
-    font-weight: 600;
-    color: var(--ink-faint);
-    vertical-align: 0.5em;
-    margin-right: 6px;
-    letter-spacing: 0.05em;
-    transition: color 0.2s ease;
-  }
-  .opt::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 100%;
-    bottom: 0;
-    height: 1.5px;
-    background: var(--accent);
-    transition: right 0.28s cubic-bezier(0.22,1,0.36,1);
-  }
-  .opt:hover { color: var(--ink); }
-  .opt:hover .num { color: var(--accent); }
-  .opt:hover::after { right: 0; }
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 34px;
+      animation: fadeIn 0.8s ease both;
+    }
 
-  .back-link {
-    display: inline-block;
-    margin-top: 44px;
-    background: none;
-    border: none;
-    font-family: var(--sans);
-    font-size: 0.82rem;
-    color: var(--ink-faint);
-    cursor: pointer;
-    opacity: 0;
-    animation: fadeIn 0.5s ease 0.55s both;
-    transition: color 0.2s ease;
-    padding: 4px;
-  }
-  .back-link:hover { color: var(--accent); }
+    .brand {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+    }
+    .brand-two {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      opacity: 60%;
+      text-align: center;
+    }
 
-  /* ── Result state ── */
-  .result-blurb {
-    font-family: var(--sans);
-    font-size: 1.0rem;
-    line-height: 1.75;
-    color: var(--ink-soft);
-    max-width: 620px;
-    margin: 28px auto 0;
-    opacity: 0;
-    animation: riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.15s both;
-  }
+    .brand b {
+      color: var(--ink);
+      font-weight: 600;
+    }
 
-  /* ── Tools section ── */
-  .tools-wrap {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 28px 90px;
-  }
-  .section-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .divider {
-    width: 34px;
-    height: 1.5px;
-    background: var(--line);
-    margin: 0 auto 20px;
-  }
+    footer {
+      padding-bottom: 50px;
+    }
 
-  /* recommended row */
-  .recommended {
-    display: none;
-    margin-bottom: 56px;
-  }
-  .recommended.show { display: block; }
-  .recommended .pills {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-  }
-  .recommended .tool {
-    border-color: rgba(79,70,229,0.45);
-    background: #fff;
-    box-shadow: 0 6px 22px rgba(79,70,229,0.13), 0 1px 3px rgba(0,0,0,0.04);
-    opacity: 0;
-    animation: popIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
-  }
-  .recommended .tool:hover {
-    box-shadow: 0 10px 28px rgba(79,70,229,0.2), 0 2px 5px rgba(0,0,0,0.05);
-    transform: translateY(-2px);
-  }
+    .topbar .restart {
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      padding: 6px 2px;
+    }
 
-  /* all-tools grid */
-  .grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 11px;
-    transition: opacity 0.4s ease, filter 0.4s ease;
-  }
-  body.filtered .grid { opacity: 0.38; filter: grayscale(1); }
-  body.filtered .grid .tool { pointer-events: auto; }
+    .topbar .restart:hover {
+      color: var(--accent);
+    }
 
-  /* ── Pill cards ── */
-  .tool {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 9px 20px 9px 11px;
-    text-decoration: none;
-    color: var(--ink);
-    position: relative;
-    transition: all 0.22s cubic-bezier(0.22,1,0.36,1);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-  }
-  .tool:hover {
-    border-color: #cfcfd6;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
-    transform: translateY(-2px);
-  }
-  .tool .logo {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    object-fit: contain;
-    background: #f4f4f5;
-  }
-  .tool .mono {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.78rem;
-    font-weight: 650;
-    color: #fff;
-    letter-spacing: 0.02em;
-  }
-  .tool .name {
-    font-size: 0.9rem;
-    font-weight: 500;
-    white-space: nowrap;
-  }
+    /* ── Experience stage ── */
+    .stage-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7vh 28px 40px;
+      text-align: center;
+      min-height: 46vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-  /* tooltip */
-  .tool .tip {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background: var(--ink);
-    color: #fff;
-    font-size: 0.77rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 10px 13px;
-    border-radius: 10px;
-    width: 235px;
-    white-space: normal;
-    text-align: left;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    z-index: 20;
-  }
-  .tool .tip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--ink);
-  }
-  .tool:hover .tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .stage {
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
 
-  /* ── Animations ── */
-  @keyframes blink { 50% { opacity: 0; } }
-  @keyframes caretFade { to { opacity: 0; width: 0; margin-left: 0; } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes riseIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes popIn {
-    from { opacity: 0; transform: translateY(14px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
+    .stage.leaving {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
-  }
-  @media (max-width: 640px) {
-    .topbar { padding: 18px 20px; }
-    .stage-wrap { padding-top: 5vh; min-height: 40vh; }
-    .options { gap: 8px 22px; }
-  }
-</style>
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 26px;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    .question {
+      font-family: var(--serif);
+      font-size: clamp(1.7rem, 4.2vw, 2.9rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--ink);
+      min-height: 1.3em;
+    }
+
+    .caret {
+      display: inline-block;
+      width: 2px;
+      height: 0.95em;
+      background: var(--accent);
+      margin-left: 3px;
+      vertical-align: -0.12em;
+      animation: blink 1.05s step-end infinite;
+    }
+
+    .caret.done {
+      animation: blink 1.05s step-end infinite, caretFade 0.6s ease 0.9s both;
+    }
+
+    /* ── Options: pure text ── */
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px 34px;
+      margin-top: 40px;
+    }
+
+    .opt {
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.98rem;
+      font-weight: 450;
+      color: var(--ink-soft);
+      cursor: pointer;
+      padding: 6px 2px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+      transition: color 0.2s ease;
+    }
+
+    .opt .num {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--ink-faint);
+      vertical-align: 0.5em;
+      margin-right: 6px;
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+
+    .opt::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: 0;
+      height: 1.5px;
+      background: var(--accent);
+      transition: right 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .opt:hover {
+      color: var(--ink);
+    }
+
+    .opt:hover .num {
+      color: var(--accent);
+    }
+
+    .opt:hover::after {
+      right: 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 44px;
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 0.55s both;
+      transition: color 0.2s ease;
+      padding: 4px;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    /* ── Result state ── */
+    .result-blurb {
+      font-family: var(--sans);
+      font-size: 1.0rem;
+      line-height: 1.75;
+      color: var(--ink-soft);
+      max-width: 620px;
+      margin: 28px auto 0;
+      opacity: 0;
+      animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+
+    /* ── Tools section ── */
+    .tools-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px 90px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .divider {
+      width: 34px;
+      height: 1.5px;
+      background: var(--line);
+      margin: 0 auto 20px;
+    }
+
+    /* recommended row */
+    .recommended {
+      display: none;
+      margin-bottom: 56px;
+    }
+
+    .recommended.show {
+      display: block;
+    }
+
+    .recommended .pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .recommended .tool {
+      border-color: rgba(79, 70, 229, 0.45);
+      background: #fff;
+      box-shadow: 0 6px 22px rgba(79, 70, 229, 0.13), 0 1px 3px rgba(0, 0, 0, 0.04);
+      opacity: 0;
+      animation: popIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .recommended .tool:hover {
+      box-shadow: 0 10px 28px rgba(79, 70, 229, 0.2), 0 2px 5px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+    }
+
+    /* all-tools grid */
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 11px;
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+
+    body.filtered .grid {
+      opacity: 0.38;
+      filter: grayscale(1);
+    }
+
+    body.filtered .grid .tool {
+      pointer-events: auto;
+    }
+
+    /* ── Pill cards ── */
+    .tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 20px 9px 11px;
+      text-decoration: none;
+      color: var(--ink);
+      position: relative;
+      transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .tool:hover {
+      border-color: #cfcfd6;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+      transform: translateY(-2px);
+    }
+
+    .tool .logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: contain;
+      background: #f4f4f5;
+    }
+
+    .tool .mono {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .tool .name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* tooltip */
+    .tool .tip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.77rem;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 10px 13px;
+      border-radius: 10px;
+      width: 235px;
+      white-space: normal;
+      text-align: left;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 20;
+    }
+
+    .tool .tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--ink);
+    }
+
+    .tool:hover .tip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Animations ── */
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes caretFade {
+      to {
+        opacity: 0;
+        width: 0;
+        margin-left: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        padding: 18px 20px;
+      }
+
+      .stage-wrap {
+        padding-top: 5vh;
+        min-height: 40vh;
+      }
+
+      .options {
+        gap: 8px 22px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="topbar">
-  <div class="brand"><b>AI</b> Tool Finder</div>
-  <button class="restart" id="restartBtn">Start over</button>
-</div>
-
-<div class="stage-wrap">
-  <div class="stage" id="stage"></div>
-</div>
-
-<div class="tools-wrap">
-  <div class="recommended" id="recommended">
-    <div class="section-label">Recommended for you</div>
-    <div class="pills" id="recPills"></div>
+  <div class="topbar">
+    <div class="brand"><b>AI Center </b>- AI Tool Finder</div>
+    <button class="restart" id="restartBtn">Start over</button>
   </div>
-  <div class="divider"></div>
-  <div class="section-label" id="gridLabel">All tools</div>
-  <div class="grid" id="grid"></div>
-</div>
 
-<script>
-/* ════════════════════════════════════════════════════════════════
-   EDITING THIS SITE
-   ────────────────────────────────────────────────────────────────
-   All tool listings and all question/recommendation logic now live
-   in two CSV files next to this one — no code editing required:
+  <div class="stage-wrap">
+    <div class="stage" id="stage"></div>
+  </div>
 
-     tools.csv  → one row per tool (id, name, domain, logo, desc)
-                  · "domain" drives the auto-favicon and the pill's
-                    outbound link. Leave blank for no link.
-                  · "logo" optionally overrides the favicon with a
-                    direct image URL. Leave blank to auto-detect.
+  <div class="tools-wrap">
+    <div class="recommended" id="recommended">
+      <div class="section-label">Recommended for you</div>
+      <div class="pills" id="recPills"></div>
+    </div>
+    <div class="divider"></div>
+    
+    <div class="grid" id="grid"></div>
+  </div>
 
-     tree.csv   → one row per question option (node, step, question,
-                  order, option_label, next, tool_ids, blurb)
-                  · Rows sharing the same "node" are the options for
-                    one question screen.
-                  · Set "next" to route to another node's key, OR
-                    set "tool_ids" (semicolon-separated, matching
-                    ids in tools.csv) + "blurb" to show a result.
-                    An option should have one or the other, not both.
+  <footer>
+    <div class="brand-two">Disclaimer: AI tools listed here are provided for informational purposes and do not <br> imply endorsement by the
+      SJSU Library or San José State University. </div>
+  </footer>
 
-   IMPORTANT: because this page loads data with fetch(), it must be
-   served over http(s) — e.g. GitHub Pages, or a local dev server
-   (`npx serve`, VS Code's "Live Server" extension, etc). Opening
-   this file directly by double-clicking it will NOT work; browsers
-   block local pages from fetching sibling files for security.
-   ════════════════════════════════════════════════════════════════ */
+  <script>
+    /* ════════════════════════════════════════════════════════════════
+       EDITING THIS SITE
+       ────────────────────────────────────────────────────────────────
+       All tool listings and all question/recommendation logic now live
+       in two CSV files next to this one — no code editing required:
+    
+         tools.csv  → one row per tool (id, name, domain, logo, desc)
+                      · "domain" drives the auto-favicon and the pill's
+                        outbound link. Leave blank for no link.
+                      · "logo" optionally overrides the favicon with a
+                        direct image URL. Leave blank to auto-detect.
+    
+         tree.csv   → one row per question option (node, step, question,
+                      order, option_label, next, tool_ids, blurb)
+                      · Rows sharing the same "node" are the options for
+                        one question screen.
+                      · Set "next" to route to another node's key, OR
+                        set "tool_ids" (semicolon-separated, matching
+                        ids in tools.csv) + "blurb" to show a result.
+                        An option should have one or the other, not both.
+    
+       IMPORTANT: because this page loads data with fetch(), it must be
+       served over http(s) — e.g. GitHub Pages, or a local dev server
+       (`npx serve`, VS Code's "Live Server" extension, etc). Opening
+       this file directly by double-clicking it will NOT work; browsers
+       block local pages from fetching sibling files for security.
+       ════════════════════════════════════════════════════════════════ */
 
-let TOOLS = [];
-let TREE = {};
+    let TOOLS = [];
+    let TREE = {};
 
-/* ── Minimal CSV parser (handles quoted fields, commas, "" escapes) ── */
-function parseCSV(text) {
-  const rows = [];
-  let row = [], field = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i], next = text[i + 1];
-    if (inQuotes) {
-      if (c === '"' && next === '"') { field += '"'; i++; }
-      else if (c === '"') { inQuotes = false; }
-      else { field += c; }
-    } else {
-      if (c === '"') inQuotes = true;
-      else if (c === ',') { row.push(field); field = ''; }
-      else if (c === '\r') { /* skip */ }
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-      else field += c;
+    /* ── Minimal CSV parser (handles quoted fields, commas, "" escapes) ── */
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i], next = text[i + 1];
+        if (inQuotes) {
+          if (c === '"' && next === '"') { field += '"'; i++; }
+          else if (c === '"') { inQuotes = false; }
+          else { field += c; }
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ',') { row.push(field); field = ''; }
+          else if (c === '\r') { /* skip */ }
+          else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+          else field += c;
+        }
+      }
+      if (field.length || row.length) { row.push(field); rows.push(row); }
+      if (rows.length && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') rows.pop();
+      const header = rows.shift().map(h => h.trim());
+      return rows.map(r => {
+        const obj = {};
+        header.forEach((h, i) => obj[h] = (r[i] ?? '').trim());
+        return obj;
+      });
     }
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  if (rows.length && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') rows.pop();
-  const header = rows.shift().map(h => h.trim());
-  return rows.map(r => {
-    const obj = {};
-    header.forEach((h, i) => obj[h] = (r[i] ?? '').trim());
-    return obj;
-  });
-}
 
-function parseToolsCSV(text) {
-  return parseCSV(text).map(r => ({
-    id: r.id, name: r.name, logo: r.logo, domain: r.domain, desc: r.desc
-  }));
-}
-
-function parseTreeCSV(text) {
-  const rows = parseCSV(text);
-  const nodeMap = {};
-  rows.forEach(r => {
-    if (!nodeMap[r.node]) nodeMap[r.node] = { q: r.question, step: r.step, options: [] };
-    const opt = { label: r.option_label, _order: Number(r.order) || 0 };
-    if (r.next) opt.next = r.next;
-    if (r.tool_ids) {
-      opt.result = r.tool_ids.split(';').map(s => s.trim()).filter(Boolean);
-      opt.blurb = r.blurb || '';
+    function parseToolsCSV(text) {
+      return parseCSV(text).map(r => ({
+        id: r.id, name: r.name, logo: r.logo, domain: r.domain, desc: r.desc
+      }));
     }
-    nodeMap[r.node].options.push(opt);
-  });
-  Object.values(nodeMap).forEach(node => {
-    node.options.sort((a, b) => a._order - b._order);
-    node.options.forEach(o => delete o._order);
-  });
-  return nodeMap;
-}
 
-/* The tool and question data below is loaded from CSV at the
-   bottom of this script (see `init()`). */
+    function parseTreeCSV(text) {
+      const rows = parseCSV(text);
+      const nodeMap = {};
+      rows.forEach(r => {
+        if (!nodeMap[r.node]) nodeMap[r.node] = { q: r.question, step: r.step, options: [] };
+        const opt = { label: r.option_label, _order: Number(r.order) || 0 };
+        if (r.next) opt.next = r.next;
+        if (r.tool_ids) {
+          opt.result = r.tool_ids.split(';').map(s => s.trim()).filter(Boolean);
+          opt.blurb = r.blurb || '';
+        }
+        nodeMap[r.node].options.push(opt);
+      });
+      Object.values(nodeMap).forEach(node => {
+        node.options.sort((a, b) => a._order - b._order);
+        node.options.forEach(o => delete o._order);
+      });
+      return nodeMap;
+    }
 
-/* ── State & elements ── */
-const stage = document.getElementById('stage');
-const grid = document.getElementById('grid');
-const recommended = document.getElementById('recommended');
-const recPills = document.getElementById('recPills');
-const gridLabel = document.getElementById('gridLabel');
-let historyStack = [];
-let typeTimer = null;
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* The tool and question data below is loaded from CSV at the
+       bottom of this script (see `init()`). */
 
-/* ── Pill builder ── */
-const MONO_COLORS = ['#6366f1','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
-function monoColor(i) { return MONO_COLORS[i % MONO_COLORS.length]; }
+    /* ── State & elements ── */
+    const stage = document.getElementById('stage');
+    const grid = document.getElementById('grid');
+    const recommended = document.getElementById('recommended');
+    const recPills = document.getElementById('recPills');
+    const gridLabel = document.getElementById('gridLabel');
+    let historyStack = [];
+    let typeTimer = null;
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function pillHTML(t, i) {
-  let logoHTML;
-  if (t.logo) {
-    logoHTML = `<img class="logo" src="${t.logo}" alt="" loading="lazy"
+    /* ── Pill builder ── */
+    const MONO_COLORS = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
+    function monoColor(i) { return MONO_COLORS[i % MONO_COLORS.length]; }
+
+    function pillHTML(t, i) {
+      let logoHTML;
+      if (t.logo) {
+        logoHTML = `<img class="logo" src="${t.logo}" alt="" loading="lazy"
       onerror="this.outerHTML='<div class=&quot;mono&quot; style=&quot;background:${monoColor(i)}&quot;>${t.name[0]}</div>'">`;
-  } else if (t.domain) {
-    logoHTML = `<img class="logo" src="https://www.google.com/s2/favicons?domain=${t.domain}&sz=64" alt="" loading="lazy"
+      } else if (t.domain) {
+        logoHTML = `<img class="logo" src="https://www.google.com/s2/favicons?domain=${t.domain}&sz=64" alt="" loading="lazy"
       onerror="this.outerHTML='<div class=&quot;mono&quot; style=&quot;background:${monoColor(i)}&quot;>${t.name[0]}</div>'">`;
-  } else {
-    logoHTML = `<div class="mono" style="background:${monoColor(i)}">${t.name[0]}</div>`;
-  }
-  return `${logoHTML}<span class="name">${t.name}</span><span class="tip">${t.desc}</span>`;
-}
+      } else {
+        logoHTML = `<div class="mono" style="background:${monoColor(i)}">${t.name[0]}</div>`;
+      }
+      return `${logoHTML}<span class="name">${t.name}</span><span class="tip">${t.desc}</span>`;
+    }
 
-function makePill(t, i) {
-  const el = document.createElement(t.domain ? 'a' : 'div');
-  el.className = 'tool';
-  el.dataset.id = t.id;
-  if (t.domain) { el.href = 'https://' + t.domain; el.target = '_blank'; el.rel = 'noopener'; }
-  el.innerHTML = pillHTML(t, i);
-  return el;
-}
+    function makePill(t, i) {
+      const el = document.createElement(t.domain ? 'a' : 'div');
+      el.className = 'tool';
+      el.dataset.id = t.id;
+      if (t.domain) { el.href = 'https://' + t.domain; el.target = '_blank'; el.rel = 'noopener'; }
+      el.innerHTML = pillHTML(t, i);
+      return el;
+    }
 
-function buildGrid() {
-  grid.innerHTML = '';
-  TOOLS.forEach((t, i) => grid.appendChild(makePill(t, i)));
-}
+    function buildGrid() {
+      grid.innerHTML = '';
+      TOOLS.forEach((t, i) => grid.appendChild(makePill(t, i)));
+    }
 
-/* ── Typewriter ── */
-function typeText(el, text, done) {
-  clearInterval(typeTimer);
-  const caret = document.createElement('span');
-  caret.className = 'caret';
-  el.textContent = '';
-  el.appendChild(caret);
-  if (REDUCED) {
-    el.insertBefore(document.createTextNode(text), caret);
-    caret.classList.add('done');
-    done();
-    return;
-  }
-  let i = 0;
-  const skip = () => {
-    clearInterval(typeTimer);
-    el.textContent = '';
-    el.appendChild(document.createTextNode(text));
-    el.appendChild(caret);
-    caret.classList.add('done');
-    stage.removeEventListener('click', skip);
-    done();
-  };
-  stage.addEventListener('click', skip);
-  typeTimer = setInterval(() => {
-    if (i < text.length) {
-      el.insertBefore(document.createTextNode(text[i]), caret);
-      i++;
-    } else {
+    /* ── Typewriter ── */
+    function typeText(el, text, done) {
       clearInterval(typeTimer);
-      caret.classList.add('done');
-      stage.removeEventListener('click', skip);
-      done();
+      const caret = document.createElement('span');
+      caret.className = 'caret';
+      el.textContent = '';
+      el.appendChild(caret);
+      if (REDUCED) {
+        el.insertBefore(document.createTextNode(text), caret);
+        caret.classList.add('done');
+        done();
+        return;
+      }
+      let i = 0;
+      const skip = () => {
+        clearInterval(typeTimer);
+        el.textContent = '';
+        el.appendChild(document.createTextNode(text));
+        el.appendChild(caret);
+        caret.classList.add('done');
+        stage.removeEventListener('click', skip);
+        done();
+      };
+      stage.addEventListener('click', skip);
+      typeTimer = setInterval(() => {
+        if (i < text.length) {
+          el.insertBefore(document.createTextNode(text[i]), caret);
+          i++;
+        } else {
+          clearInterval(typeTimer);
+          caret.classList.add('done');
+          stage.removeEventListener('click', skip);
+          done();
+        }
+      }, 26);
     }
-  }, 26);
-}
 
-/* ── Stage transitions ── */
-function swapStage(render) {
-  stage.classList.add('leaving');
-  setTimeout(() => {
-    stage.classList.remove('leaving');
-    render();
-  }, REDUCED ? 0 : 350);
-}
+    /* ── Stage transitions ── */
+    function swapStage(render) {
+      stage.classList.add('leaving');
+      setTimeout(() => {
+        stage.classList.remove('leaving');
+        render();
+      }, REDUCED ? 0 : 350);
+    }
 
-/* ── Question state ── */
-function showNode(key, push = true) {
-  if (push) historyStack.push(key);
-  const node = TREE[key];
-  clearFilter();
-  stage.innerHTML = `
+    /* ── Question state ── */
+    function showNode(key, push = true) {
+      if (push) historyStack.push(key);
+      const node = TREE[key];
+      clearFilter();
+      stage.innerHTML = `
     <div class="step-label">${node.step}</div>
     <h2 class="question" id="qText"></h2>
     <div class="options" id="opts" hidden></div>
     ${historyStack.length > 1 ? '<button class="back-link" id="backBtn" hidden>Back</button>' : ''}
   `;
-  const qEl = document.getElementById('qText');
-  const opts = document.getElementById('opts');
-  typeText(qEl, node.q, () => {
-    opts.hidden = false;
-    opts.innerHTML = node.options.map((o, i) =>
-      `<button class="opt" style="animation-delay:${0.06 * i}s" data-i="${i}">
+      const qEl = document.getElementById('qText');
+      const opts = document.getElementById('opts');
+      typeText(qEl, node.q, () => {
+        opts.hidden = false;
+        opts.innerHTML = node.options.map((o, i) =>
+          `<button class="opt" style="animation-delay:${0.06 * i}s" data-i="${i}">
          <span class="num">${String(i + 1).padStart(2, '0')}</span>${o.label}
        </button>`
-    ).join('');
-    opts.querySelectorAll('.opt').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const opt = node.options[+btn.dataset.i];
-        if (opt.next) swapStage(() => showNode(opt.next));
-        else swapStage(() => showResult(opt));
+        ).join('');
+        opts.querySelectorAll('.opt').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const opt = node.options[+btn.dataset.i];
+            if (opt.next) swapStage(() => showNode(opt.next));
+            else swapStage(() => showResult(opt));
+          });
+        });
+        const back = document.getElementById('backBtn');
+        if (back) {
+          back.hidden = false;
+          back.addEventListener('click', e => { e.stopPropagation(); goBack(); });
+        }
       });
-    });
-    const back = document.getElementById('backBtn');
-    if (back) {
-      back.hidden = false;
-      back.addEventListener('click', e => { e.stopPropagation(); goBack(); });
     }
-  });
-}
 
-/* ── Result state ── */
-function showResult(opt) {
-  historyStack.push('__result__');
-  const picks = opt.result.map(id => TOOLS.find(t => t.id === id)).filter(Boolean);
-  stage.innerHTML = `
+    /* ── Result state ── */
+    function showResult(opt) {
+      historyStack.push('__result__');
+      const picks = opt.result.map(id => TOOLS.find(t => t.id === id)).filter(Boolean);
+      stage.innerHTML = `
     <div class="step-label">Our Picks</div>
     <h2 class="question" id="qText"></h2>
     <p class="result-blurb" id="blurb" hidden></p>
     <button class="back-link" id="backBtn" hidden>Back</button>
   `;
-  const names = picks.map(p => p.name);
-  const headline = names.length > 1
-    ? names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1]
-    : names[0];
-  typeText(document.getElementById('qText'), headline, () => {
-    const blurb = document.getElementById('blurb');
-    blurb.textContent = opt.blurb;
-    blurb.hidden = false;
-    const back = document.getElementById('backBtn');
-    back.hidden = false;
-    back.addEventListener('click', e => { e.stopPropagation(); goBack(); });
+      const names = picks.map(p => p.name);
+      const headline = names.length > 1
+        ? names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1]
+        : names[0];
+      typeText(document.getElementById('qText'), headline, () => {
+        const blurb = document.getElementById('blurb');
+        blurb.textContent = opt.blurb;
+        blurb.hidden = false;
+        const back = document.getElementById('backBtn');
+        back.hidden = false;
+        back.addEventListener('click', e => { e.stopPropagation(); goBack(); });
 
-    /* recommended pills above the grid */
-    recPills.innerHTML = '';
-    picks.forEach((t, i) => {
-      const idx = TOOLS.indexOf(t);
-      const pill = makePill(t, idx);
-      pill.style.animationDelay = (0.08 * i) + 's';
-      recPills.appendChild(pill);
-    });
-    recommended.classList.add('show');
-    document.body.classList.add('filtered');
-    gridLabel.textContent = 'All tools';
-    recommended.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
-}
+        /* recommended pills above the grid */
+        recPills.innerHTML = '';
+        picks.forEach((t, i) => {
+          const idx = TOOLS.indexOf(t);
+          const pill = makePill(t, idx);
+          pill.style.animationDelay = (0.08 * i) + 's';
+          recPills.appendChild(pill);
+        });
+        recommended.classList.add('show');
+        document.body.classList.add('filtered');
+        recommended.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
 
-function clearFilter() {
-  document.body.classList.remove('filtered');
-  recommended.classList.remove('show');
-  recPills.innerHTML = '';
-  gridLabel.textContent = 'All tools';
-}
+    function clearFilter() {
+      document.body.classList.remove('filtered');
+      recommended.classList.remove('show');
+      recPills.innerHTML = '';
+    }
 
-function goBack() {
-  historyStack.pop();                       // leave current
-  const prev = historyStack.pop() || 'start'; // re-push in showNode
-  swapStage(() => showNode(prev));
-}
+    function goBack() {
+      historyStack.pop();                       // leave current
+      const prev = historyStack.pop() || 'start'; // re-push in showNode
+      swapStage(() => showNode(prev));
+    }
 
-function restart() {
-  historyStack = [];
-  swapStage(() => showNode('start'));
-}
-document.getElementById('restartBtn').addEventListener('click', restart);
+    function restart() {
+      historyStack = [];
+      swapStage(() => showNode('start'));
+    }
+    document.getElementById('restartBtn').addEventListener('click', restart);
 
-/* ── Init: load data from CSV, then start the app ── */
-async function init() {
-  stage.innerHTML = `<div class="step-label">Loading</div><h2 class="question">Fetching tool data…</h2>`;
-  try {
-    const [toolsRes, treeRes] = await Promise.all([
-      fetch('tools.csv'),
-      fetch('tree.csv'),
-    ]);
-    if (!toolsRes.ok) throw new Error('tools.csv failed to load (HTTP ' + toolsRes.status + ')');
-    if (!treeRes.ok) throw new Error('tree.csv failed to load (HTTP ' + treeRes.status + ')');
-    const [toolsText, treeText] = await Promise.all([toolsRes.text(), treeRes.text()]);
+    /* ── Init: load data from CSV, then start the app ── */
+    async function init() {
+      stage.innerHTML = `<div class="step-label">Loading</div><h2 class="question">Fetching tool data…</h2>`;
+      try {
+        const [toolsRes, treeRes] = await Promise.all([
+          fetch('tools.csv'),
+          fetch('tree.csv'),
+        ]);
+        if (!toolsRes.ok) throw new Error('tools.csv failed to load (HTTP ' + toolsRes.status + ')');
+        if (!treeRes.ok) throw new Error('tree.csv failed to load (HTTP ' + treeRes.status + ')');
+        const [toolsText, treeText] = await Promise.all([toolsRes.text(), treeRes.text()]);
 
-    TOOLS = parseToolsCSV(toolsText);
-    TREE = parseTreeCSV(treeText);
+        TOOLS = parseToolsCSV(toolsText);
+        TREE = parseTreeCSV(treeText);
 
-    if (!TOOLS.length) throw new Error('tools.csv loaded but contained no rows');
-    if (!Object.keys(TREE).length) throw new Error('tree.csv loaded but contained no rows');
-    if (!TREE.start) throw new Error('tree.csv has no "start" node — every tree needs one row with node=start');
+        if (!TOOLS.length) throw new Error('tools.csv loaded but contained no rows');
+        if (!Object.keys(TREE).length) throw new Error('tree.csv loaded but contained no rows');
+        if (!TREE.start) throw new Error('tree.csv has no "start" node — every tree needs one row with node=start');
 
-    buildGrid();
-    showNode('start');
-  } catch (err) {
-    console.error('AI Tool Finder failed to load data:', err);
-    stage.innerHTML = `
+        buildGrid();
+        showNode('start');
+      } catch (err) {
+        console.error('AI Tool Finder failed to load data:', err);
+        stage.innerHTML = `
       <div class="step-label">Couldn't load data</div>
       <h2 class="question" style="font-size:1.4rem;">${err.message}</h2>
       <p class="result-blurb" style="opacity:1; animation:none;">
@@ -666,9 +804,10 @@ async function init() {
         directly by double-clicking it (a <code>file://</code> address) blocks the browser from
         fetching the CSVs, even if they're right next to it.
       </p>`;
-  }
-}
-init();
-</script>
+      }
+    }
+    init();
+  </script>
 </body>
+
 </html>
